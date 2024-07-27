@@ -11,9 +11,10 @@ class mapgen():
         self.ROOMS_N = rooms_n
 
         self.ROOM_SIZE = 11
+        self.MAP_SIZE = self.SIZE * self.ROOM_SIZE
 
         self.pre_map = np.full((self.SIZE, self.SIZE), fill_value=0, order="F")
-        self.str_map = np.full((self.SIZE * self.ROOM_SIZE, self.SIZE * self.ROOM_SIZE), fill_value='#', order="F")
+        self.str_map = np.full((self.MAP_SIZE, self.MAP_SIZE), fill_value='#', order="F")
 
         ###
         self.gen_pre_map()
@@ -55,7 +56,14 @@ class mapgen():
             tiles_id.append(tile)
 
     ###----------------------------------------------###
-    def choice_room(self, not_empty_tiles, room_id):
+    def choice_room(self, room_id):
+        neighbors = get_neighbors(self.SIZE-1, (room_id[0], room_id[1]))
+        not_empty_tiles = 0
+
+        for i in neighbors:
+            if self.pre_map[i] != 0:
+                not_empty_tiles += 1
+
         x = room_id[0]
         y = room_id[1]
 
@@ -138,21 +146,12 @@ class mapgen():
             if (y > 0 and self.pre_map[x, y-1] != 0):
                 return random.choice(rooms1x_l)
 
-        print(not_empty_tiles, room_id)
+        print(not_empty_tiles, (x, y))
         return room_empty
 
-    def add_room(self, room_id):
+    def add_room(self, room_id, room):
         room_id_upleft = (room_id[0]*self.ROOM_SIZE, room_id[1]*self.ROOM_SIZE)
 
-        neighbors = get_neighbors(self.SIZE-1, (room_id[0], room_id[1]))
-        not_empty_tiles = 0
-
-        for i in neighbors:
-            if self.pre_map[i] != 0:
-                not_empty_tiles += 1
-
-        room = self.choice_room(not_empty_tiles, room_id)
-        
         self.str_map[
             room_id_upleft[0]:room_id_upleft[0]+self.ROOM_SIZE,
             room_id_upleft[1]:room_id_upleft[1]+self.ROOM_SIZE
@@ -161,8 +160,11 @@ class mapgen():
     def gen_str_map(self):
         for row in range(self.SIZE):
             for col in range(self.SIZE):
-                if self.pre_map[row][col] != 0:
-                    self.add_room((row, col))
+                if self.pre_map[row][col] == 2:
+                    room = self.choice_room((row, col))
+                    self.add_room((row, col), room)
+                elif self.pre_map[row][col] == 1:
+                    self.add_room((row, col), room_start)
 
     ###-----------------------------------------------###
     def write_pre_map(self):
