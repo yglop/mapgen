@@ -13,24 +13,14 @@ class mapgen():
         self.ROOM_SIZE = 11
         self.MAP_SIZE = self.SIZE * self.ROOM_SIZE
 
+    def create_map(self):
         self.pre_map = np.full((self.SIZE, self.SIZE), fill_value=0, order="F")
         self.str_map = np.full((self.MAP_SIZE, self.MAP_SIZE), fill_value='#', order="F")
 
-        ###
         self.gen_pre_map()
-        # self.pre_map = np.array([ # DEBUG
-        #     [2, 2, 0, 0, 2, 0, 2, 2],
-        #     [0, 2, 2, 2, 2, 2, 2, 0],
-        #     [0, 0, 0, 2, 2, 0, 0, 0],
-        #     [2, 2, 2, 2, 2, 2, 2, 2],
-        #     [0, 0, 2, 0, 2, 0, 0, 0],
-        #     [0, 0, 0, 0, 2, 0, 0, 0],
-        #     [2, 2, 2, 2, 2, 2, 2, 2],
-        #     [2, 0, 2, 0, 2, 0, 0, 2],
-        # ])
-
         self.gen_str_map()
 
+    ###----------------------------------------------###
     def gen_pre_map(self):
         tile = [random.randint(1, self.SIZE-2), random.randint(1, self.SIZE-2)]
         self.pre_map[tile[0], tile[1]] = 1
@@ -165,19 +155,3 @@ class mapgen():
                     self.add_room((row, col), room)
                 elif self.pre_map[row][col] == 1:
                     self.add_room((row, col), room_start)
-
-    ###-----------------------------------------------###
-    def write_pre_map(self):
-        with open('./mapgen/txtmaps/pre_map.txt', 'w') as file_pre_map:
-            for row in self.pre_map:
-                print(*row, file=file_pre_map)
-
-    def write_str_map(self):
-        with open('./mapgen/txtmaps/str_map.txt', 'w') as file_str_map:
-            for row in self.str_map:
-                print(*row, file=file_str_map)
-
-
-# mg = mapgen() # DEBUG
-# mg.write_pre_map()
-# mg.write_str_map()
