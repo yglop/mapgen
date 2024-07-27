@@ -1,8 +1,8 @@
 import random
 import numpy as np
 
-from rooms import *
-from get_neighbors import get_neighbors
+from mapgen.rooms import *
+from mapgen.get_neighbors import get_neighbors
 
 
 class mapgen():
@@ -168,12 +168,12 @@ class mapgen():
 
     ###-----------------------------------------------###
     def write_pre_map(self):
-        with open('./txtmaps/pre_map.txt', 'w') as file_pre_map:
+        with open('./mapgen/txtmaps/pre_map.txt', 'w') as file_pre_map:
             for row in self.pre_map:
                 print(*row, file=file_pre_map)
 
     def write_str_map(self):
-        with open('./txtmaps/str_map.txt', 'w') as file_str_map:
+        with open('./mapgen/txtmaps/str_map.txt', 'w') as file_str_map:
             for row in self.str_map:
                 print(*row, file=file_str_map)
 
